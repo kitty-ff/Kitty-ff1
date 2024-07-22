@@ -169,7 +169,7 @@ async (message, match, m) => {
                 }
             }
 
-            return await message.sendMessage(message.jid, reactionMessage)
+            return await message.client.sendMessage(message.jid, reactionMessage)
 
 
         } catch (error) {
