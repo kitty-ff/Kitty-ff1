@@ -1,6 +1,8 @@
 
 const { command, isPrivate, parsedJid } = require("../../lib");
- 
+const {
+    React
+  } = require("../database");
 // Made with ❤ by AlienAlfa
 const {
     translate
