@@ -442,10 +442,6 @@ command({
 async (message, match) => {
    const chatId = message.key.remoteJid;
    try {
-      if (!message.isGroup) return; // await message.reply("_This command is for groups_");
-
-      let isadmin = await isAdmin(message.jid, message.key.participant, message.client);
-      if (!isadmin) return
       const Reactlist = await React.React.findOne({
          where: {
             chatId
