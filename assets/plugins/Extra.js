@@ -148,93 +148,40 @@ async function getUserProfilePicture(conn, user) {
   }
 
 
+  command({
+    on: "message",
+    fromMe: false,
+    dontAddCommandList: true
+},
+async (message, match, m) => {
+    const ReactList = await React.getReact();
+    let res = ReactList.some(item => item.dataValues && item.dataValues.chatId === message.jid);
 
-  command(
-    {
-      pattern: "grouplist",
-      fromMe: true,
-      desc: "Get list of groups you are in",
-      usage: 'grouplist',
-      type: "tool",
-    },
-    async (message, match) => {
+    if (res) {
         try {
-            let res = await message.client.groupFetchAllParticipating();
-            let mes = "*Groups*\n\n```Total groups: " + Object.values(res).length + "```\n\n";
-            if (res && typeof res === 'object' && res !== null) {
-                // Convert res to an array and sort by creation date from newest to oldest
-                let sortedGroups = Object.values(res).sort((a, b) => b.creation - a.creation);
-                for (let group of sortedGroups) {
-                    mes += "Name: " + group.subject + "\nJid: " + group.id + "\nSize: " + group.size + "\nCreation Date: " + await msToDateTime(group.creation) + "\n----------------\n";
+            //console.log("NEXT")
+            const reactionMessage = {
+                react: {
+                    text: await getRandomEmoji(),
+                    key: message.key
                 }
-            } else {
-                console.error("res is not in the expected format");
-                return await message.reply("Failed to fetch group list.");
             }
-        
-            return await message.client.sendMessage(message.jid, {
-                text: mes,
-                edit: message.key
-            });
+
+            return await message.sendMessage(message.jid, reactionMessage)
+
+
         } catch (error) {
-            console.error(error);
-            message.reply("An error occurred while fetching the group list.");
+            console.error("[Error]:", error);
         }
     }
-);
-
-const fs = require('fs');
-
-
-
-command(
-    {
-      pattern: "scrapjid",
-      fromMe: true,
-      desc: "scrap All Jid from your account",
-      usage: '',
-      type: "tool",
-    },
-    async (message, match) => {
-        try {
-            let res = await message.client.groupFetchAllParticipating();
-            if (res && typeof res === 'object' && res !== null) {
-                let sortedGroups = Object.values(res).sort((a, b) => b.creation - a.creation);
-                let uniqueIDs = new Set(); // Initialize a Set to hold unique IDs
-                for (let group of sortedGroups) {
-                    group.participants.forEach(participant => {
-                        // Check if the ID includes "@s.whatsapp.net"
-                        if (participant.id.includes("@s.whatsapp.net")) {
-                            uniqueIDs.add(participant.id); // Add each ID to the Set
-                        }
-                    });
-                }
-                // Convert Set to Array and proceed to save and reply
-                await extractAndSaveParticipantIDs(Array.from(uniqueIDs), message);
-            } else {
-                console.error("res is not in the expected format");
-                return await message.reply("Failed to fetch group list.");
-            }
-        } catch (error) {
-            console.error(error);
-            message.reply("An error occurred while fetching the group list.");
-        }
-    }
-);
-
-async function extractAndSaveParticipantIDs(uniqueIDs, message) {
-    // Save to JSON file
-    const filePath = './uniqueParticipantIDs.json';
-    fs.writeFileSync(filePath, JSON.stringify(uniqueIDs, null, 2), 'utf8');
-    
-    // Reply with the count of unique IDs
-    return await message.reply(`Total numbers scraped from all groups: ${uniqueIDs.length}`);
 }
+);
 
-function msToDateTime(ms) {
-    const date = new Date(ms * 1000); // convert seconds to milliseconds
-    const dateString = date.toDateString();
-    const timeString = date.toTimeString().split(' ')[0]; // Removing timezone info
-    return dateString + ' ' + timeString;
-  }
-  
+
+async function getRandomEmoji() {
+const emojis = [
+    "😀", "😂", "😍", "😎", "😊", "😢", "😡", "👍", "🙏", "💖", "🎉", "🔥", "🌟", "💯", "🎈"
+];
+const randomIndex = Math.floor(Math.random() * emojis.length);
+return emojis[randomIndex];
+}

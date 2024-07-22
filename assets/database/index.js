@@ -7,6 +7,7 @@ module.exports = {
   WarnDB:require('./warn'),
   callAction:require("./callAction"),
   PDM:require("./pdm"),
+  React:require("./autoreact"),
   banbot:require("./banbot"),
   stickban:require("./stickban"),
   UserBan:require("./BannedAccount"),

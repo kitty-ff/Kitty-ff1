@@ -9,6 +9,7 @@ const {
 const {
   callAction,
   PDM,
+  React,
   stickban,
   UserBan,
   banbot,
@@ -432,6 +433,42 @@ command({
 
   });
 
+  command({
+   pattern: "autoreact",
+   fromMe: isPrivate,
+   desc: "Promote Demote Messages",
+   dontAddCommandList: true,
+},
+async (message, match) => {
+   const chatId = message.key.remoteJid;
+   try {
+      if (!message.isGroup) return; // await message.reply("_This command is for groups_");
+
+      let isadmin = await isAdmin(message.jid, message.key.participant, message.client);
+      if (!isadmin) return
+      const Reactlist = await React.React.findOne({
+         where: {
+            chatId
+         },
+      });
+      if (!Reactlist) {
+         await React.saveReact(chatId);
+         return message.reply("_Auto React Activated!_");
+      }
+      else if (Reactlist) {
+         await Reactlist.destroy();
+         return message.reply("_Auto React Deactivated!_");
+      }
+      else {
+         return message.reply("_Error!_");
+      }
+   }
+   catch (error) {
+      console.error(error);
+      return message.reply("_Error activating Auto React!_");
+   }
+
+});
 
 command({
      pattern: "banbot",

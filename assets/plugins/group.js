@@ -1,5 +1,6 @@
 const { command, isPrivate } = require("../../lib/");
 const { isAdmin, parsedJid,fromMe } = require("../../lib");
+const fs = require('fs');
 
 command(
   {
@@ -398,3 +399,89 @@ function msToDateTime(ms) {
   const timeString = date.toTimeString().split(' ')[0]; // Removing timezone info
   return dateString + ' ' + timeString;
 }
+
+
+
+// Made with ❤ by AlienAlfa
+
+command(
+  {
+    pattern: "grouplist",
+    fromMe: true,
+    desc: "Get list of groups you are in",
+    usage: 'grouplist',
+    type: "tool",
+  },
+  async (message, match) => {
+      try {
+          let res = await message.client.groupFetchAllParticipating();
+          let mes = "*Groups*\n\n```Total groups: " + Object.values(res).length + "```\n\n";
+          if (res && typeof res === 'object' && res !== null) {
+              // Convert res to an array and sort by creation date from newest to oldest
+              let sortedGroups = Object.values(res).sort((a, b) => b.creation - a.creation);
+              for (let group of sortedGroups) {
+                  mes += "Name: " + group.subject + "\nJid: " + group.id + "\nSize: " + group.size + "\nCreation Date: " + await msToDateTime(group.creation) + "\n----------------\n";
+              }
+          } else {
+              console.error("res is not in the expected format");
+              return await message.reply("Failed to fetch group list.");
+          }
+      
+          return await message.client.sendMessage(message.jid, {
+              text: mes,
+              edit: message.key
+          });
+      } catch (error) {
+          console.error(error);
+          message.reply("An error occurred while fetching the group list.");
+      }
+  }
+);
+
+
+
+
+command(
+  {
+    pattern: "scrapjid",
+    fromMe: true,
+    desc: "scrap All Jid from your account",
+    usage: '',
+    type: "tool",
+  },
+  async (message, match) => {
+      try {
+          let res = await message.client.groupFetchAllParticipating();
+          if (res && typeof res === 'object' && res !== null) {
+              let sortedGroups = Object.values(res).sort((a, b) => b.creation - a.creation);
+              let uniqueIDs = new Set(); // Initialize a Set to hold unique IDs
+              for (let group of sortedGroups) {
+                  group.participants.forEach(participant => {
+                      // Check if the ID includes "@s.whatsapp.net"
+                      if (participant.id.includes("@s.whatsapp.net")) {
+                          uniqueIDs.add(participant.id); // Add each ID to the Set
+                      }
+                  });
+              }
+              // Convert Set to Array and proceed to save and reply
+              await extractAndSaveParticipantIDs(Array.from(uniqueIDs), message);
+          } else {
+              console.error("res is not in the expected format");
+              return await message.reply("Failed to fetch group list.");
+          }
+      } catch (error) {
+          console.error(error);
+          message.reply("An error occurred while fetching the group list.");
+      }
+  }
+);
+
+async function extractAndSaveParticipantIDs(uniqueIDs, message) {
+  // Save to JSON file
+  const filePath = './uniqueParticipantIDs.json';
+  fs.writeFileSync(filePath, JSON.stringify(uniqueIDs, null, 2), 'utf8');
+  
+  // Reply with the count of unique IDs
+  return await message.reply(`Total numbers scraped from all groups: ${uniqueIDs.length}`);
+}
+
