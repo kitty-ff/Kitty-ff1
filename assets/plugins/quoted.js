@@ -7,7 +7,7 @@ command(
     fromMe: isPrivate,
     desc: "quoted message",
   },
-  async (message, match) => {
+  async (message, m, match) => {
     if (!message.reply_message && !match) {
       return await message.reply("*Reply to a message or provide ID*");
     }
@@ -21,8 +21,12 @@ command(
     console.log("Key: '"+key+"'\n\n"+ await msg);
 
     if (msg) {
-      const relayOptions = { messageId: await msg.message.key.id };
-      return await message.client.relayMessage(message.jid, await msg, relayOptions);
+
+      msg = serialize(
+        JSON.parse(JSON.stringify(await msg.message)),
+        message.client
+      );
+      message.forward(message.jid, msg.message);
     }
 
     if (!msg) {
@@ -43,3 +47,26 @@ command(
     await message.forward(message.jid, msg.quoted.message);
   }
 );
+
+/*
+> const { command, isPrivate, serialize } = require("../../lib/");
+
+
+command({
+  pattern: 'wapoll ?(.*)',
+  fromMe: true,
+  desc: "Creates poll (WhatsApp feature)",
+  use: 'group',
+  usage: '.wapoll Poll title,option,option,option'
+}, (async (message, match) => {
+  //if (!message.isGroup) return await message.sendReply(Lang.GROUP_COMMAND)
+  if (!match[1]) return await message.sendReply(`_Need params!_\n_.wapoll title,option,option_`)
+  match = match[1].split(',')
+  const buttons = [];
+  for (let i = 1; i < match.length; i++) {
+  buttons.push({optionName: match[i]})
+  }
+  await message.client.relayMessage(message.jid, { senderKeyDistributionMessage: {groupId: message.jid}, messageContextInfo: {messageSecret: "LzBNJaq8ZGE/2hn5bUplPvecdDxTSI1qduEbbIMI5J4="}, pollCreationMessage: { name: match[0], options: buttons, selectableOptionsCount: 0 } }, {});
+}));
+
+*/
