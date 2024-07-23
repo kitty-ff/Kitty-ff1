@@ -17,7 +17,7 @@ command(
       return await message.reply("*No valid key found*");
     }
 
-    let msg = await loadMessage(key);
+    let msg = await loadMessage(await key.trim());
     console.log("Key: '"+key+"'\n\n"+ await msg);
 
     if (msg) {
