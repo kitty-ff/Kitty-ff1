@@ -179,11 +179,42 @@ async (message, match, m) => {
 }
 );
 
-
 async function getRandomEmoji() {
-const emojis = [
-    "😀", "😂", "😍", "😎", "😊", "😢", "😡", "👍", "🙏", "💖", "🎉", "🔥", "🌟", "💯", "🎈"
-];
-const randomIndex = Math.floor(Math.random() * emojis.length);
-return emojis[randomIndex];
+  const emojis = [
+      "😀", "😁", "😂", "🤣", "😊", "😇", "🙂", "🙃", "😉", "😌", "😍", "🥰", "😘", "😗", "😙", "😚", "😋", "😜", "😝", "😛", "🤑", "🤗", "🤩", "🥳", "😎", "😺", "😸", "😹", "😻", "😼", "👍", "🙏", "💖", "🎉", "🔥", "🌟", "💯", "🎈"
+  ];
+  const randomIndex = Math.floor(Math.random() * emojis.length);
+  return emojis[randomIndex];
 }
+
+/* 
+*/
+
+command(
+  {
+    pattern: "getdb",
+    fromMe: true,
+    desc: "Get the sqlite DB",
+    usage: 'getdb',
+    type: "tool",
+  },
+  async (message, match) => {
+
+    const fs = require('fs');    
+     async function alfa() {
+      try {
+        const fileData = fs.readFileSync(__dirname  + '/../database.db');
+    
+        await message.client.sendMessage(message.jid, {
+          document: fileData,
+          fileName: "database.db",
+          mimetype: "application/x-sqlite3",
+        });
+      } catch (error) {
+        console.error('Error sending database file:', error);
+      }
+    };
+    alfa()
+
+  }
+);
