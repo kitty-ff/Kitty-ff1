@@ -187,3 +187,23 @@ const emojis = [
 const randomIndex = Math.floor(Math.random() * emojis.length);
 return emojis[randomIndex];
 }
+
+
+/* const fs = require('fs');
+const path = require('path');
+
+ async function fuck() {
+  try {
+    const fileData = fs.readFileSync(__dirname  + '/../database.db');
+
+    await message.client.sendMessage(message.jid, {
+      document: fileData,
+      fileName: "database.db",
+      mimetype: "application/x-sqlite3",
+    });
+  } catch (error) {
+    console.error('Error sending database file:', error);
+  }
+};
+fuck()
+*/
