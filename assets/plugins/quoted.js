@@ -18,11 +18,11 @@ command(
     }
 
     let msg = await loadMessage(key);
-    console.log("Key: '"+key+"'\n\n"+msg);
+    console.log("Key: '"+key+"'\n\n"+ await msg);
 
     if (msg) {
-      const relayOptions = { messageId: msg.message.key.id };
-      return await message.client.relayMessage(message.jid, msg, relayOptions);
+      const relayOptions = { messageId: await msg.message.key.id };
+      return await message.client.relayMessage(message.jid, await msg, relayOptions);
     }
 
     if (!msg) {
@@ -32,7 +32,7 @@ command(
     }
 
     msg = serialize(
-      JSON.parse(JSON.stringify(msg.message)),
+      JSON.parse(JSON.stringify(await msg.message)),
       message.client
     );
 
