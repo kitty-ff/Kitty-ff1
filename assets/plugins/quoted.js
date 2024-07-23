@@ -18,7 +18,7 @@ command(
     }
 
     let msg = await loadMessage(key);
-    console.log(msg);
+    console.log("Key: '"+key+"'\n\n"+msg);
 
     if (msg) {
       const relayOptions = { messageId: msg.message.key.id };
