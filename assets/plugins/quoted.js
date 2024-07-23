@@ -12,7 +12,7 @@ command(
       return await message.reply("*Reply to a message or provide ID*");
     }
 
-    let key = match || (message.reply_message && message.reply_message.key.id);
+    let key = await (match || (message.reply_message && message.reply_message.key.id)).trim();
     if (!key) {
       return await message.reply("*No valid key found*");
     }
