@@ -12,14 +12,14 @@ command(
     
     let jids;
     if (match.includes("@g.us")) {
-      jids = match;
+      jids = match.split(' ').filter(word => word.includes("@g.us"));
     } else {
       jids = parsedJid(match);
     }
 
     if (match.includes("ptt")) {
       if (message.reply_message.audio) {
-        for (let i of await jids) {
+        for (let i of jids) {
           try {
             const relayOptions = { ptt: true, messageId: m.quoted.key.id };
             await message.client.relayMessage(i, m.quoted.message, relayOptions);
@@ -28,15 +28,15 @@ command(
           }
         }
       } else {
-        return await  message.reply('This is not an audio');
+        return message.reply('This is not an audio');
       }
     } else {
       for (let i of jids) {
         try {
           const relayOptions = { messageId: m.quoted.key.id };
-         return await message.client.relayMessage(i, m.quoted.message, relayOptions);
+          await message.client.relayMessage(i, m.quoted.message, relayOptions);
         } catch (error) {
-          return console.error("[Error]:", error);
+          console.error("[Error]:", error);
         }
       }
     }
