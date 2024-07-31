@@ -254,7 +254,7 @@ command(
     if (!match) return message.reply("_Enter or reply to a text to tag_");
     if (!message.isGroup) return;
     let isyouadmin = await isAdmin(message.jid, message.key.participant, message.client);
-    if (!isyouadmin) return;
+   // if (!isyouadmin) return;
     const { participants } = await message.client.groupMetadata(message.jid);
     message.sendMessage(message.jid,match, {
       mentions: participants.map((a) => a.id),
