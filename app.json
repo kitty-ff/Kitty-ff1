@@ -83,12 +83,6 @@
       "value": "true"
     }
   },
-  "addons": [
-    {
-      "plan": "heroku-postgresql:basic"
-    }
-  ],
-
   "buildpacks": [{ "url": "https://github.com/heroku/heroku-buildpack-nodejs#latest" }],
   "formation": {
     "web": {
