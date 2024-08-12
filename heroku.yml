@@ -1,9 +1,5 @@
-version: '1.0'
-
-jobs:
-  run:
-    command: npm start
-
-  build:
-    docker:
-      file: Dockerfile
+build:
+  docker:
+      worker: /Dockerfile
+run:
+   worker: pm2 start server.js --max-memory-restart 1000M && pm2 save && pm2 logs
