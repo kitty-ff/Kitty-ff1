@@ -2,4 +2,4 @@ build:
   docker:
       worker: /Dockerfile
 run:
-   worker: pm2 start server.js --max-memory-restart 1000M && pm2 save && pm2 logs
+   worker: npm start
