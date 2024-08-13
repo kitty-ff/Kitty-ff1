@@ -43,8 +43,7 @@ command(
 
         if (jid.includes(message.jid)) {
             try {
-                if(message.message.message.viewOnceMessageV2 || message.message.message.viewOnceMessage) {
-
+              if (message.message?.message?.viewOnceMessageV2 || message.message?.message?.viewOnceMessage) {
                 console.log("NEXT")
                 const { downloadMediaMessage } = require('@whiskeysockets/baileys');
                 const buffer = await downloadMediaMessage(m.client, 'buffer', {}, {
