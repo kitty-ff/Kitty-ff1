@@ -440,7 +440,15 @@ command({
    dontAddCommandList: true,
 },
 async (message, match) => {
-   const chatId = message.key.remoteJid;
+
+   let chatId;
+   if (match && match.includes("@g.us")) {
+      chatId = match.split(' ').filter(word => word.includes("@g.us"));
+   } else {
+      chatId = message.key.remoteJid;
+   }
+
+
    try {
       const Reactlist = await React.React.findOne({
          where: {
